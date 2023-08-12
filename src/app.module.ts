@@ -4,6 +4,8 @@ import { NotificationModule } from '@modules/notification/notification.module';
 import { ConfigModule } from '@nestjs/config';
 import { Configuration } from '@config/configuration';
 import { DatabaseModule } from '@database/database.module';
+import { AuthModule } from '@modules/auth/auth.module';
+import { TokenModule } from '@modules/token/token.module';
 
 @Module({
     imports: [
@@ -11,6 +13,8 @@ import { DatabaseModule } from '@database/database.module';
         DatabaseModule,
         UserModule,
         NotificationModule,
+        AuthModule,
+        TokenModule,
     ],
     controllers: [],
     providers: [],

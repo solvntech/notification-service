@@ -22,6 +22,8 @@
             "@helpers/*": ["./src/helpers/*"],
             "@modules/*": ["./src/modules/*"],
             "@database/*": ["./src/database/*"],
+            "@dto": ["./src/dto"],
+            "@decorators/*": ["./src/decorators/*"],
             "@types": ["./src/types"],
             "@constants": ["./src/constants"],
         }
