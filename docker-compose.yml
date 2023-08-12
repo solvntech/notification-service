@@ -1,0 +1,60 @@
+version: '3.9'
+networks:
+    notification_network:
+        driver: bridge
+services:
+    noti_mongo_db:
+        image: mongo
+        container_name: noti_mongo_db
+        restart: always
+        env_file:
+            - .env
+        ports:
+            - '${DEV_MONGO_PORT}:${DEV_MONGO_PORT}'
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: $DEV_MONGO_USERNAME
+            MONGO_INITDB_ROOT_PASSWORD: $DEV_MONGO_PASSWORD
+        volumes:
+            - mongodb-data:/data/db
+        networks:
+            - notification_network
+    noti_rabbit_mq:
+        image: 'rabbitmq:3.10-management'
+        container_name: noti_rabbit_mq
+        env_file:
+            - .env
+        ports:
+            - '${DEV_RABBITMQ_PORT}:${DEV_RABBITMQ_PORT}'
+            - '${DEV_RABBITMQ_MANAGEMENT_PORT}:${DEV_RABBITMQ_MANAGEMENT_PORT}'
+        environment:
+            RABBITMQ_DEFAULT_USER: '${DEV_RABBITMQ_DEFAULT_USER}'
+            RABBITMQ_DEFAULT_PASS: '${DEV_RABBITMQ_DEFAULT_PASS}'
+            RABBITMQ_ERLANG_COOKIE: '${DEV_RABBITMQ_ERLANG_COOKIE}'
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq
+        networks:
+            - notification_network
+    noti_api:
+        container_name: noti_api
+        build:
+            context: .
+            dockerfile: .docker/api/Dockerfile
+        env_file:
+            - .env
+        environment:
+            - 'WAIT_HOSTS=${DEV_MONGO_HOST}:${DEV_MONGO_PORT}'
+        depends_on:
+            - noti_mongo_db
+        networks:
+            - notification_network
+        volumes:
+            - ./src:/usr/src/app/src
+        ports:
+            - '${DEV_API_PORT}:${DEV_API_PORT}'
+        expose:
+            - '${DEV_API_PORT}'
+        command: 'yarn run start:dev'
+volumes:
+    noti_api:
+    mongodb-data:
+    rabbitmq-data:
