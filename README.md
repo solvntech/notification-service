@@ -1,32 +1,32 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <img src="images/notification-system-logo.png" width="200" alt="Notify logo"/>
+</p>
+<h2 align="center">Notification system</h2>
+
+### Description
+
+In our system, <a href="https://www.rabbitmq.com/">RabbitMQ</a> takes center stage as a core element, facilitating the streamlined distribution of notifications to email and app endpoints. This is achieved through a dynamic interplay between push and pull processors, each playing a vital role in ensuring efficient communication.
+
+Developers can harness the power of job scheduling within our framework, enabling them to set up campaigns or work reminders with ease. This feature enhances the flexibility of our system, allowing for targeted and timely notifications.
+
+One of the standout features of our architecture is its resilience. In cases where a push notification encounters a setback, developers need not worry. Our system automatically takes charge, initiating a retry mechanism for failed notifications. This ensures that missed notifications get a second chance, bolstering the overall reliability of our notification infrastructure.
+
+### System design
+<br/>
+<p align="center">
+  <img src="images/notification-system-design.png" alt="design"/>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+1. Received `Post request`
+2. It will check all users corresponding to the message and create a notification with the status set to `Pending`. For each user, a notify record will be generated.
+3. The system will push the newly created messages to `RabbitMQ`.
+4. `RabbitMQ` will queue the messages and navigate them to the corresponding workers, preventing server overload.
+5. The designated `Worker` processes will push notifications to the appropriate services. These services are responsible for sending emails, SMS, and other notifications.
+6. The notifications are sent, the `Worker` will receive notification statuses such as `Delivered` or `Failed`, and these statuses will be updated in the database.
+7. A `Cron job` will periodically check for notifications that failed to send.
+8. Notifications that failed will be pushed to `RabbitMQ` again.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+### Installation
 
 ```bash
 $ yarn install
