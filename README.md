@@ -3,7 +3,7 @@
 </p>
 <h2 align="center">Notification system</h2>
 
-### Description
+## Description
 
 In our system, <a href="https://www.rabbitmq.com/">RabbitMQ</a> takes center stage as a core element, facilitating the streamlined distribution of notifications to email and app endpoints. This is achieved through a dynamic interplay between push and pull processors, each playing a vital role in ensuring efficient communication.
 
@@ -11,8 +11,8 @@ Developers can harness the power of job scheduling within our framework, enablin
 
 One of the standout features of our architecture is its resilience. In cases where a push notification encounters a setback, developers need not worry. Our system automatically takes charge, initiating a retry mechanism for failed notifications. This ensures that missed notifications get a second chance, bolstering the overall reliability of our notification infrastructure.
 
-### System design
-<br/>
+## System design
+
 <p align="center">
   <img src="images/notification-system-design.png" alt="design"/>
 </p>
@@ -26,48 +26,55 @@ One of the standout features of our architecture is its resilience. In cases whe
 7. A `Cron job` will periodically check for notifications that failed to send.
 8. Notifications that failed will be pushed to `RabbitMQ` again.
 
-### Installation
+## Entity Relational Diagram
 
-```bash
-$ yarn install
-```
+<p align="center">
+  <img src="images/er-diagram.png" alt="design"/>
+</p>
 
-## Running the app
+## Installation
+### Start project developer environment
+1. Clone the repo
+   ```sh
+   git clone https://github.com/solvntech/notification-service.git
+   git switch main
+   ```
 
-```bash
-# development
-$ yarn run start
+2. Copy from `.env.example` to `.env` and configure in `.env`
+   ```dotenv
+    # Mongo config
+    DEV_MONGO_BD_NAME=notification
+    DEV_MONGO_USERNAME=notification
+    DEV_MONGO_PASSWORD=notification
+    DEV_MONGO_HOST=mongoDB
+    DEV_MONGO_PORT=27017
+    
+    # RabbitMQ config
+    DEV_RABBITMQ_HOST=localhost
+    DEV_RABBITMQ_PORT=5672
+    DEV_RABBITMQ_QUEUE=noti_queue
+    DEV_RABBITMQ_MANAGEMENT_PORT=15672
+    DEV_RABBITMQ_DEFAULT_USER=admin
+    DEV_RABBITMQ_DEFAULT_PASS=admin
+    DEV_RABBITMQ_ERLANG_COOKIE=mysecretcookie
+    
+    # Api port
+    DEV_API_PORT=8080
+   ```
 
-# watch mode
-$ yarn run start:dev
+3. Install containers required
+   ```sh
+   docker-compose up
+   ```
 
-# production mode
-$ yarn run start:prod
-```
+   <img src="./images/docker.png" alt="docker">
 
-## Test
 
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+4. Logging Server - Docker
+   ```sh
+   docker logs -f noti_api
+   ```
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- Author - [Linkedin](https://www.linkedin.com/in/nguyen-hai-270898/)
